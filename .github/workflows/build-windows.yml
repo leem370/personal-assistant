@@ -41,6 +41,18 @@ jobs:
         working-directory: Windows版
         run: pyinstaller build.spec --noconfirm
 
+      # 4.5 调试：列出打包产物（定位问题用）
+      - name: List build output
+        working-directory: Windows版
+        shell: powershell
+        run: |
+          Write-Host "=== dist 目录结构 ==="
+          if (Test-Path "dist") {
+            Get-ChildItem -Path "dist" -Recurse -Depth 1 | Select-Object FullName
+          } else {
+            Write-Host "dist 目录不存在！"
+          }
+
       # 5. 安装 NSIS（Windows runner 默认没有，用 Chocolatey 装）
       - name: Install NSIS
         shell: powershell
@@ -67,8 +79,8 @@ jobs:
       - name: Upload installer
         uses: actions/upload-artifact@v4
         with:
-          name: 个人助理Setup
-          path: Windows版/个人助理Setup.exe
+          name: PersonalAssistantSetup
+          path: Windows版/PersonalAssistantSetup.exe
           if-no-files-found: error
 
       # 8. 如果是手动触发或打 tag，创建 Release
@@ -78,4 +90,4 @@ jobs:
         with:
           tag_name: v1.${{ github.run_number }}
           name: 个人助理 v1.${{ github.run_number }}
-          files: Windows版/个人助理Setup.exe
+          files: Windows版/PersonalAssistantSetup.exe
