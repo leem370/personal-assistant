@@ -1,0 +1,5 @@
+websocket-client==1.8.0
+requests==2.32.3
+schedule==1.2.0
+pyyaml==6.0.1
+lark-oapi==1.4.0
