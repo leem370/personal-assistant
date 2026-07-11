@@ -41,13 +41,9 @@ Section "Install"
     SectionIn RO
     SetOutPath "$INSTDIR"
 
-    ; 复制 PyInstaller 打包产物（dist/个人助理/ → 这里用绝对相对路径）
-    ; PyInstaller onedir 产物在 dist/个人助理/ 下
-    File /r "dist\个人助理\*.*"
-
-    ; 重命名为英文 exe 名（避免中文 exe 名潜在问题）
-    IfFileExists "$INSTDIR\个人助理.exe" 0 +2
-        Rename "$INSTDIR\个人助理.exe" "$INSTDIR\PersonalAssistant.exe"
+    ; 复制 PyInstaller 打包产物（dist/PersonalAssistant/）
+    ; PyInstaller onedir 产物在 dist/PersonalAssistant/ 下
+    File /r "dist\PersonalAssistant\*.*"
 
     ; 创建快捷方式
     CreateDirectory "$SMPROGRAMS\个人助理"
