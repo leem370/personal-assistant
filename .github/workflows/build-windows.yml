@@ -75,7 +75,7 @@ jobs:
         shell: powershell
         run: makensis /V2 installer.nsi
 
-      # 7. 上传安装包到构建产物（每次构建都能下载）
+      # 7. 上传安装包到构建产物
       - name: Upload installer
         uses: actions/upload-artifact@v4
         with:
@@ -83,11 +83,26 @@ jobs:
           path: Windows版/PersonalAssistantSetup.exe
           if-no-files-found: error
 
-      # 8. 如果是手动触发或打 tag，创建 Release
+      # 8. 打包绿色版 zip（解压即用，给不想装 NSIS 安装包的朋友）
+      - name: Zip green version
+        working-directory: Windows版
+        shell: powershell
+        run: Compress-Archive -Path dist\PersonalAssistant\* -DestinationPath PersonalAssistant.zip
+
+      - name: Upload green version
+        uses: actions/upload-artifact@v4
+        with:
+          name: PersonalAssistantGreen
+          path: Windows版/PersonalAssistant.zip
+          if-no-files-found: error
+
+      # 9. 手动触发时创建 Release（包含安装包 + 绿色版）
       - name: Create Release
         if: github.event_name == 'workflow_dispatch'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v1.${{ github.run_number }}
           name: 个人助理 v1.${{ github.run_number }}
-          files: Windows版/PersonalAssistantSetup.exe
+          files: |
+            Windows版/PersonalAssistantSetup.exe
+            Windows版/PersonalAssistant.zip
