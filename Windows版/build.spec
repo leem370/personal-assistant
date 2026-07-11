@@ -59,7 +59,7 @@ a = Analysis(
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
-    excludes=[],  # 不排除任何模块
+    excludes=["flask", "django"],  # lark_oapi 的 flask/django adapter 不用，排除避免警告
     noarchive=False,
 )
 

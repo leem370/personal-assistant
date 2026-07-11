@@ -41,14 +41,29 @@ jobs:
         working-directory: Windows版
         run: pyinstaller build.spec --noconfirm
 
-      # 5. 用 NSIS 打包成安装程序
-      - name: Create installer with NSIS
-        uses: joncloud/makensis-action@v4
-        with:
-          path-to-nsi-file: Windows版/installer.nsi
-          arguments: /V2
+      # 5. 安装 NSIS（Windows runner 默认没有，用 Chocolatey 装）
+      - name: Install NSIS
+        shell: powershell
+        run: |
+          choco install nsis -y
+          # 刷新 PATH 让 makensis 可用
+          echo "C:\Program Files (x86)\NSIS" >> $env:GITHUB_PATH
 
-      # 6. 上传安装包到构建产物（每次构建都能下载）
+      - name: Verify makensis
+        shell: powershell
+        run: |
+          Write-Host "makensis version:"
+          makensis /VERSION
+          Write-Host "makensis path:"
+          where.exe makensis
+
+      # 6. 用 NSIS 打包成安装程序（直接调 makensis，比第三方 action 更可靠）
+      - name: Create installer with NSIS
+        working-directory: Windows版
+        shell: powershell
+        run: makensis /V2 installer.nsi
+
+      # 7. 上传安装包到构建产物（每次构建都能下载）
       - name: Upload installer
         uses: actions/upload-artifact@v4
         with:
@@ -56,7 +71,7 @@ jobs:
           path: Windows版/个人助理Setup.exe
           if-no-files-found: error
 
-      # 7. 如果是手动触发或打 tag，创建 Release
+      # 8. 如果是手动触发或打 tag，创建 Release
       - name: Create Release
         if: github.event_name == 'workflow_dispatch'
         uses: softprops/action-gh-release@v2
