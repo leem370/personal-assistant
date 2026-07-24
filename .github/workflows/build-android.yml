@@ -10,9 +10,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: 安卓版
 
     steps:
       - name: Checkout
@@ -32,24 +29,39 @@ jobs:
             openjdk-17-jdk \
             libltdl-dev \
             cmake zip unzip \
-            git wget \
-            python3-pip
+            git wget
 
       - name: Install buildozer
         run: pip install buildozer cython
+
+      - name: Verify buildozer
+        run: |
+          echo "=== buildozer version ==="
+          python3 -m buildozer version || echo "FAILED"
+          echo "=== python version ==="
+          python3 --version
+          echo "=== java version ==="
+          java -version 2>&1 || echo "no java"
+          echo "=== working directory ==="
+          pwd
+          echo "=== 安卓版 files ==="
+          ls 安卓版/
 
       - name: Cache buildozer global dir
         uses: actions/cache@v4
         with:
           path: ~/.buildozer
-          key: buildozer-${{ runner.os }}-${{ hashFiles('安卓版/buildozer.spec') }}
+          key: buildozer-${{ runner.os }}-v2-${{ hashFiles('安卓版/buildozer.spec') }}
           restore-keys: |
-            buildozer-${{ runner.os }}-
+            buildozer-${{ runner.os }}-v2-
 
       - name: Build APK
-        run: buildozer android debug
+        working-directory: 安卓版
+        run: python3 -m buildozer android debug
+        timeout-minutes: 45
 
       - name: Upload APK artifact
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: PersonalAssistant-APK
