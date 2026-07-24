@@ -1,0 +1,22 @@
+# 安卓版个人助理配置文件
+
+# 系统设置
+system:
+  enable_ai: true  # 是否启用 AI
+  db_path: "./data/personal_assistant.db"  # 数据库路径
+
+# AI 配置（敏感字段从环境变量读取）
+ai:
+  api_key: ""  # 留空，从 AI_API_KEY 环境变量读取
+  api_base: ""  # 留空，从 AI_API_BASE 环境变量读取
+  model_name: "gpt-4o-mini"
+
+# 定时任务时间（本地通知触发）
+schedules:
+  morning_reminder: "09:00"    # 早间待办提醒
+  night_check: "21:00"         # 晚间未完成检查
+  daily_summary: "22:00"       # 日终 AI 复盘
+  weekly_report: "23:00"       # 周报（周日）
+  archive: "03:00"             # 数据归档清理
+  fitness_reminder_monday: "16:00"    # 周一健身提醒
+  fitness_reminder_thursday: "16:00"  # 周四健身提醒
