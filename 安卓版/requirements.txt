@@ -1,0 +1,21 @@
+# Android 个人助理依赖
+# Kivy 框架
+kivy>=2.2.0
+kivymd>=1.1.1
+
+# 网络请求
+requests>=2.28.0
+
+# YAML 配置
+pyyaml>=6.0
+
+# 定时任务调度
+schedule>=1.2.0
+
+# 本地通知
+plyer>=2.1.0
+
+# Android 打包时需要（Buildozer 会自动处理）
+# android
+# pyjnius
+# kivy_launcher
